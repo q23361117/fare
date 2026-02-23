@@ -13,7 +13,6 @@ margin:0;
 padding:15px;
 text-align:center;
 }
-
 .card{
 background:white;
 padding:20px;
@@ -22,7 +21,6 @@ max-width:420px;
 margin:auto;
 box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
-
 input{
 width:95%;
 padding:12px;
@@ -31,7 +29,6 @@ font-size:16px;
 border-radius:8px;
 border:1px solid #ccc;
 }
-
 button{
 width:100%;
 padding:14px;
@@ -43,14 +40,12 @@ background:#ff9800;
 color:white;
 cursor:pointer;
 }
-
 #map{
 width:100%;
-height:300px;
+height:400px;
 margin-top:15px;
 border-radius:10px;
 }
-
 .result{
 font-size:16px;
 margin-top:15px;
@@ -58,7 +53,6 @@ font-weight:bold;
 color:#e65100;
 text-align:left;
 }
-
 .note{
 margin-top:10px;
 font-size:13px;
@@ -78,8 +72,7 @@ text-align:left;
 
 <button onclick="calcRoute()">試算車資</button>
 
-<div id="map" style="width:100%; height:400px;"></div>
-
+<div id="map"></div>
 
 <div class="result" id="result"></div>
 
@@ -89,7 +82,6 @@ text-align:left;
 </div>
 
 <button onclick="openLine()">🚖 立即叫車</button>
-
 </div>
 
 <script>
@@ -110,14 +102,13 @@ directionsService = new google.maps.DirectionsService();
 directionsRenderer = new google.maps.DirectionsRenderer({
 suppressMarkers: true // 不使用預設圖示
 });
-
 directionsRenderer.setMap(map);
 }
 
 function calcRoute(){
 
-let start = document.getElementById("start").value;
-let end = document.getElementById("end").value;
+let start = document.getElementById("start").value.trim();
+let end = document.getElementById("end").value.trim();
 
 if(!start || !end){
 alert("請輸入完整地址");
@@ -134,7 +125,7 @@ directionsService.route(request, function(result, status){
 
 if(status == 'OK'){
 
-// 顯示路線
+// 顯示藍色路線
 directionsRenderer.setDirections(result);
 
 let route = result.routes[0].legs[0];
@@ -160,6 +151,12 @@ map: map,
 label: "終"
 });
 
+// 自動縮放到路線範圍
+let bounds = new google.maps.LatLngBounds();
+bounds.extend(startLocation);
+bounds.extend(endLocation);
+map.fitBounds(bounds);
+
 // 距離與時間
 let distanceKm = route.distance.value / 1000;
 let durationMin = route.duration.value / 60;
@@ -184,5 +181,16 @@ alert("距離計算失敗，請重新輸入地址");
 
 });
 }
+
+function openLine(){
+window.open("https://lin.ee/1aSbon2");
+}
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap" async defer></script>
+
+<!-- 替換成你的 Google Maps API Key -->
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap">
+</script>
+
+</body>
+</html>
