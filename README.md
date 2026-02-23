@@ -81,8 +81,6 @@ button:hover{
 </div>
 
 <script>
-// 這裡用簡單 Google Maps Distance Matrix API 計算距離與時間
-// 你需要先申請 API KEY，放到 apiKey 變數
 const apiKey = "AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po";
 
 function calcFare(){
@@ -90,46 +88,48 @@ function calcFare(){
   let end = document.getElementById("end").value;
 
   if(start=="" || end==""){
-    alert("請輸入完整上車與下車地點");
+    alert("請輸入完整地址");
     return;
   }
 
-  fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${encodeURIComponent(start)}&destinations=${encodeURIComponent(end)}&key=${apiKey}`)
-  .then(response => response.json())
-  .then(data => {
-    try{
-      let distanceMeters = data.rows[0].elements[0].distance.value;
-      let durationSec = data.rows[0].elements[0].duration.value;
+  let service = new google.maps.DistanceMatrixService();
 
-      let distanceKm = distanceMeters/1000;
-      let durationMin = durationSec/60;
+  service.getDistanceMatrix({
+    origins: [start],
+    destinations: [end],
+    travelMode: 'DRIVING',
+    unitSystem: google.maps.UnitSystem.METRIC,
+  }, function(response, status) {
 
-      // 計算車資
-      let fare = 80 + (distanceKm*15) + (durationMin*3);
-      if(distanceKm > 15){
-        fare += (distanceKm-15)*10;
-      }
-      fare = Math.round(fare);
-
-      // 顯示結果
-      document.getElementById("result").innerHTML = 
-      `預估距離：${distanceKm.toFixed(1)} km<br>`+
-      `預估時間：${Math.round(durationMin)} 分鐘<br>`+
-      `預估車資：${fare} 元`;
-    }catch(e){
-      alert("無法計算距離，請確認地址是否正確（僅限中彰投）");
+    if (status !== 'OK') {
+      alert("距離計算失敗，請確認地址是否正確");
+      return;
     }
-  })
-  .catch(err=>{
-    alert("距離計算失敗，請稍後再試");
-    console.log(err);
-  });
-}
 
-function openLine(){
-  window.open("https://lin.ee/1aSbon2");
+    let element = response.rows[0].elements[0];
+
+    if(element.status !== "OK"){
+      alert("地址不在服務範圍內");
+      return;
+    }
+
+    let distanceKm = element.distance.value / 1000;
+    let durationMin = element.duration.value / 60;
+
+    let fare = 80 + (distanceKm*15) + (durationMin*3);
+
+    if(distanceKm > 15){
+      fare += (distanceKm - 15) * 10;
+    }
+
+    fare = Math.round(fare);
+
+    document.getElementById("result").innerHTML =
+      `預估距離：${distanceKm.toFixed(1)} km<br>
+       預估時間：${Math.round(durationMin)} 分鐘<br>
+       預估車資：${fare} 元`;
+  });
 }
 </script>
 
-</body>
-</html>
+<script src="https://maps.googleapis.com/maps/api/js?key=你的API金鑰"></script>
