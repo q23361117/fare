@@ -142,26 +142,17 @@ startMarker = new google.maps.Marker({
     position: startLocation,
     map: map,
     icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 18,          // 圓大小
-        fillColor: 'green', // 填滿顏色
-        fillOpacity: 1,     // 不透明
-        strokeColor: 'white', // 邊框
-        strokeWeight: 2
+        url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggMEMxMy4zMzMgMCAxNiA2IDE2IDhDMTYgMTAuMDAxIDEzLjMzMyAxNiA4IDE2QzIuNjY3IDE2IDAgMTAuMDAxIDAgOEMwIDYgMi42NjcgMCA4IDBaIiBmaWxsPSJncmVlbiIvPjwvc3ZnPg==',
+        scaledSize: new google.maps.Size(16,16)
     }
 });
-
 // 終點圓點（紅色）
 endMarker = new google.maps.Marker({
     position: endLocation,
     map: map,
     icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 18,
-        fillColor: 'red',
-        fillOpacity: 1,
-        strokeColor: 'white',
-        strokeWeight: 2
+       url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggMEMxMy4zMzMgMCAxNiA2IDE2IDhDMTYgMTAuMDAxIDEzLjMzMyAxNiA4IDE2QzIuNjY3IDE2IDAgMTAuMDAxIDAgOEMwIDYgMi42NjcgMCA4IDBaIiBmaWxsPSJyZWQiLz48L3N2Zz4=',
+        scaledSize: new google.maps.Size(16,16)
     }
 });
 // 自動縮放到路線範圍
