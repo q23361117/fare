@@ -142,18 +142,18 @@ startMarker = new google.maps.Marker({
     position: startLocation,
     map: map,
     icon: {
-        url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggMEMxMy4zMzMgMCAxNiA2IDE2IDhDMTYgMTAuMDAxIDEzLjMzMyAxNiA4IDE2QzIuNjY3IDE2IDAgMTAuMDAxIDAgOEMwIDYgMi42NjcgMCA4IDBaIiBmaWxsPSJncmVlbiIvPjwvc3ZnPg==',
-        scaledSize: new google.maps.Size(16,16)
-    }
+        url:  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTggMEMxMy4zMzMgMCAxNiA2IDE2IDhDMTYgMTAuMDAxIDEzLjMzMyAxNiA4IDE2QzIuNjY3IDE2IDAgMTAuMDAxIDAgOEMwIDYgMi42NjcgMCA4IDBaIiBmaWxsPSJncmVlbiIvPjwvc3ZnPg==",
+    scaledSize: new google.maps.Size(20, 20) // 圓點大小可調
+  }
 });
 // 終點圓點（紅色）
 endMarker = new google.maps.Marker({
     position: endLocation,
     map: map,
     icon: {
-       url: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggMEMxMy4zMzMgMCAxNiA2IDE2IDhDMTYgMTAuMDAxIDEzLjMzMyAxNiA4IDE2QzIuNjY3IDE2IDAgMTAuMDAxIDAgOEMwIDYgMi42NjcgMCA4IDBaIiBmaWxsPSJyZWQiLz48L3N2Zz4=',
-        scaledSize: new google.maps.Size(16,16)
-    }
+       url: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTggMEMxMy4zMzMgMCAxNiA2IDE2IDhDMTYgMTAuMDAxIDEzLjMzMyAxNiA4IDE2QzIuNjY3IDE2IDAgMTAuMDAxIDAgOEMwIDYgMi42NjcgMCA4IDBaIiBmaWxsPSJyZWQiLz48L3N2Zz4=",
+    scaledSize: new google.maps.Size(20, 20)
+  }
 });
 // 自動縮放到路線範圍
 let bounds = new google.maps.LatLngBounds();
