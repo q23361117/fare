@@ -143,7 +143,7 @@ startMarker = new google.maps.Marker({
     map: map,
     icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 10,          // 圓大小
+        scale: 18,          // 圓大小
         fillColor: 'green', // 填滿顏色
         fillOpacity: 1,     // 不透明
         strokeColor: 'white', // 邊框
@@ -157,7 +157,7 @@ endMarker = new google.maps.Marker({
     map: map,
     icon: {
         path: google.maps.SymbolPath.CIRCLE,
-        scale: 10,
+        scale: 18,
         fillColor: 'red',
         fillOpacity: 1,
         strokeColor: 'white',
