@@ -137,20 +137,33 @@ let endLocation = route.end_location;
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-// 起點圓點
+// 起點圓點（綠色）
 startMarker = new google.maps.Marker({
-position: startLocation,
-map: map,
-label: "起"
+    position: startLocation,
+    map: map,
+    icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 10,          // 圓大小
+        fillColor: 'green', // 填滿顏色
+        fillOpacity: 1,     // 不透明
+        strokeColor: 'white', // 邊框
+        strokeWeight: 2
+    }
 });
 
-// 終點圓點
+// 終點圓點（紅色）
 endMarker = new google.maps.Marker({
-position: endLocation,
-map: map,
-label: "終"
+    position: endLocation,
+    map: map,
+    icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 10,
+        fillColor: 'red',
+        fillOpacity: 1,
+        strokeColor: 'white',
+        strokeWeight: 2
+    }
 });
-
 // 自動縮放到路線範圍
 let bounds = new google.maps.LatLngBounds();
 bounds.extend(startLocation);
