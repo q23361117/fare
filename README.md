@@ -78,7 +78,8 @@ text-align:left;
 
 <button onclick="calcRoute()">試算車資</button>
 
-<div id="map"></div>
+<div id="map" style="width:100%; height:400px;"></div>
+
 
 <div class="result" id="result"></div>
 
@@ -184,3 +185,4 @@ alert("距離計算失敗，請重新輸入地址");
 });
 }
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap" async defer></script>
