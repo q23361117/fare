@@ -95,19 +95,26 @@ text-align:left;
 let map;
 let directionsService;
 let directionsRenderer;
+let startMarker;
+let endMarker;
 
 function initMap(){
 map = new google.maps.Map(document.getElementById("map"), {
 zoom: 12,
-center: {lat:24.1477, lng:120.6736} // 台中中心
+center: {lat:24.1477, lng:120.6736} // 台中
 });
 
 directionsService = new google.maps.DirectionsService();
-directionsRenderer = new google.maps.DirectionsRenderer();
+
+directionsRenderer = new google.maps.DirectionsRenderer({
+suppressMarkers: true // 不使用預設圖示
+});
+
 directionsRenderer.setMap(map);
 }
 
 function calcRoute(){
+
 let start = document.getElementById("start").value;
 let end = document.getElementById("end").value;
 
@@ -123,11 +130,36 @@ travelMode: 'DRIVING'
 };
 
 directionsService.route(request, function(result, status){
+
 if(status == 'OK'){
+
+// 顯示路線
 directionsRenderer.setDirections(result);
 
 let route = result.routes[0].legs[0];
 
+let startLocation = route.start_location;
+let endLocation = route.end_location;
+
+// 清除舊圓點
+if(startMarker) startMarker.setMap(null);
+if(endMarker) endMarker.setMap(null);
+
+// 起點圓點
+startMarker = new google.maps.Marker({
+position: startLocation,
+map: map,
+label: "起"
+});
+
+// 終點圓點
+endMarker = new google.maps.Marker({
+position: endLocation,
+map: map,
+label: "終"
+});
+
+// 距離與時間
 let distanceKm = route.distance.value / 1000;
 let durationMin = route.duration.value / 60;
 
@@ -136,28 +168,19 @@ let fare = 80 + (distanceKm * 15) + (durationMin * 3);
 if(distanceKm > 15){
 fare += (distanceKm - 15) * 10;
 }
+
 fare = Math.round(fare);
 
+// 顯示結果
 document.getElementById("result").innerHTML =
 `預估距離：${distanceKm.toFixed(1)} km<br>
 預估時間：${Math.round(durationMin)} 分鐘<br>
 預估車資：${fare} 元`;
 
 }else{
-alert("無法規劃路線，請確認地址是否在中彰投");
+alert("距離計算失敗，請重新輸入地址");
 }
+
 });
 }
-
-function openLine(){
-window.open("https://lin.ee/1aSbon2");
-}
 </script>
-
-<!-- 把下面改成你的API金鑰 -->
-<script async defer
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap">
-</script>
-
-</body>
-</html>
