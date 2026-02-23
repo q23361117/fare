@@ -83,7 +83,7 @@ button:hover{
 <script>
 // 這裡用簡單 Google Maps Distance Matrix API 計算距離與時間
 // 你需要先申請 API KEY，放到 apiKey 變數
-const apiKey = "YOUR_GOOGLE_MAPS_API_KEY";
+const apiKey = "AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po";
 
 function calcFare(){
   let start = document.getElementById("start").value;
