@@ -114,32 +114,47 @@ function drawMarkers(leg){
 let startLocation = leg.start_location;
 let endLocation = leg.end_location;
 
+// 清除舊標記
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
+// 起點綠圓
 startMarker = new google.maps.Marker({
 position: startLocation,
 map: map,
+zIndex: 999,
 icon:{
-url:"https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-scaledSize:new google.maps.Size(40,40)
+path: google.maps.SymbolPath.CIRCLE,
+scale: 8,
+fillColor: "#00c853",
+fillOpacity: 1,
+strokeColor: "#ffffff",
+strokeWeight: 2
 }
 });
 
+// 終點紅圓
 endMarker = new google.maps.Marker({
 position: endLocation,
 map: map,
+zIndex: 999,
 icon:{
-url:"https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-scaledSize:new google.maps.Size(40,40)
+path: google.maps.SymbolPath.CIRCLE,
+scale: 8,
+fillColor: "#d50000",
+fillOpacity: 1,
+strokeColor: "#ffffff",
+strokeWeight: 2
 }
 });
 
+// 自動縮放
 let bounds = new google.maps.LatLngBounds();
 bounds.extend(startLocation);
 bounds.extend(endLocation);
 map.fitBounds(bounds);
 }
+
 
 // 車資計算
 function calcFare(leg){
