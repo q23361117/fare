@@ -175,29 +175,35 @@ alert("距離計算失敗，請重新輸入地址");
 // 綠起點＋紅終點（手機穩定版）
 function drawMarkers(leg){
 
+// 清除舊圖示
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
+// 起點（自訂綠色圖標）
 startMarker = new google.maps.Marker({
 position: leg.start_location,
 map: map,
+title: "起點",
 icon: {
-url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-scaledSize: new google.maps.Size(40,40)
-},
-title: "起點"
+url: "https://maps.google.com/mapfiles/kml/paddle/grn-circle.png",
+scaledSize: new google.maps.Size(40, 40),
+anchor: new google.maps.Point(20, 40)
+}
 });
 
+// 終點（自訂紅色圖標）
 endMarker = new google.maps.Marker({
 position: leg.end_location,
 map: map,
+title: "終點",
 icon: {
-url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-scaledSize: new google.maps.Size(40,40)
-},
-title: "終點"
+url: "https://maps.google.com/mapfiles/kml/paddle/red-circle.png",
+scaledSize: new google.maps.Size(40, 40),
+anchor: new google.maps.Point(20, 40)
+}
 });
 }
+
 
 function openLine(){
 window.open("https://lin.ee/1aSbon2");
