@@ -135,7 +135,17 @@ if(status === 'OK'){
 // 顯示路線
 directionsRenderer.setDirections(result);
 
-drawMarkers(result.routes[0].legs[0]);
+directionsRenderer.setDirections(result);
+
+let leg = result.routes[0].legs[0];
+
+// 先縮放地圖
+map.fitBounds(result.routes[0].bounds);
+
+// 延遲畫標記（關鍵）
+setTimeout(function(){
+    drawMarkers(leg);
+}, 300);
 
 // 畫定位點
 drawMarkers(leg);
