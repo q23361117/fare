@@ -135,7 +135,7 @@ if(status === 'OK'){
 // 顯示路線
 directionsRenderer.setDirections(result);
 
-let leg = result.routes[0].legs[0];
+drawMarkers(result.routes[0].legs[0]);
 
 // 畫定位點
 drawMarkers(leg);
