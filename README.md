@@ -176,20 +176,37 @@ function drawMarkers(leg){
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-// 起點（綠）
+// 起點（綠色圓）
 startMarker = new google.maps.Marker({
 position: leg.start_location,
 map: map,
-icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+icon: {
+path: google.maps.SymbolPath.CIRCLE,
+scale: 8,
+fillColor: "#00C853",
+fillOpacity: 1,
+strokeColor: "#ffffff",
+strokeWeight: 2
+},
+zIndex: 9999
 });
 
-// 終點（紅）
+// 終點（紅色圓）
 endMarker = new google.maps.Marker({
 position: leg.end_location,
 map: map,
-icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+icon: {
+path: google.maps.SymbolPath.CIRCLE,
+scale: 8,
+fillColor: "#FF0000",
+fillOpacity: 1,
+strokeColor: "#ffffff",
+strokeWeight: 2
+},
+zIndex: 9999
 });
 }
+
 
 // LINE按鈕
 function openLine(){
