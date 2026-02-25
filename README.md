@@ -90,7 +90,8 @@ function initMap(){
 
 map = new google.maps.Map(document.getElementById("map"), {
 zoom: 12,
-center: {lat:24.1477, lng:120.6736} // 台中
+center: {lat:24.1477, lng:120.6736},
+mapId: "c5b92407e1dbcc2a3d20b950"   // 你的 Map ID
 });
 
 directionsService = new google.maps.DirectionsService();
@@ -101,7 +102,7 @@ suppressMarkers: true,
 draggable: true
 });
 
-// 使用者改路線時重新計算
+// 拖曳路線時自動更新
 directionsRenderer.addListener("directions_changed", function(){
 let result = directionsRenderer.getDirections();
 if(result){
@@ -176,7 +177,7 @@ function updateFare(leg){
 let distanceKm = leg.distance.value / 1000;
 let durationMin = leg.duration.value / 60;
 
-// ===== 計費邏輯 =====
+// 計費公式
 let fare = 80 + (distanceKm * 15) + (durationMin * 3);
 
 // 15公里以上加成
@@ -198,7 +199,6 @@ fare = 120;
 
 fare = Math.round(fare);
 
-// 顯示
 document.getElementById("result").innerHTML =
 `預估距離：${distanceKm.toFixed(1)} km<br>
 預估時間：${Math.round(durationMin)} 分鐘<br>
