@@ -85,13 +85,14 @@ let directionsService;
 let directionsRenderer;
 let startMarker = null;
 let endMarker = null;
+let currentResult = null;
 
 function initMap(){
 
 map = new google.maps.Map(document.getElementById("map"), {
 zoom: 12,
 center: {lat:24.1477, lng:120.6736},
-mapId: "c5b92407e1dbcc2a3d20b950"   // 你的 Map ID
+mapId: "c5b92407e1dbcc2a3d20b950"
 });
 
 directionsService = new google.maps.DirectionsService();
@@ -102,7 +103,6 @@ suppressMarkers: true,
 draggable: true
 });
 
-// 拖曳路線時自動更新
 directionsRenderer.addListener("directions_changed", function(){
 let result = directionsRenderer.getDirections();
 if(result){
@@ -132,7 +132,12 @@ provideRouteAlternatives: true
 
 if(status === 'OK'){
 
+currentResult = result;
+
 directionsRenderer.setDirections(result);
+directionsRenderer.setRouteIndex(0);
+
+createRouteButtons(result);
 
 let leg = result.routes[0].legs[0];
 drawMarkers(leg);
@@ -144,31 +149,53 @@ alert("距離計算失敗");
 });
 }
 
+function createRouteButtons(result){
+
+let container = document.getElementById("result");
+container.innerHTML = "<b>選擇路線：</b><br>";
+
+result.routes.forEach((route, index)=>{
+
+let distance = route.legs[0].distance.text;
+let duration = route.legs[0].duration.text;
+
+container.innerHTML += 
+`<button onclick="selectRoute(${index})" style="margin-top:6px;background:#2196F3">
+路線 ${index+1} (${distance} / ${duration})
+</button>`;
+});
+}
+
+function selectRoute(index){
+
+directionsRenderer.setRouteIndex(index);
+
+let leg = currentResult.routes[index].legs[0];
+drawMarkers(leg);
+updateFare(leg);
+}
+
 function drawMarkers(leg){
 
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-// 起點（綠色）
 startMarker = new google.maps.marker.AdvancedMarkerElement({
 map: map,
 position: leg.start_location,
 content: new google.maps.marker.PinElement({
 background: "#4CAF50",
 glyphColor: "white"
-}).element,
-title: "起點"
+}).element
 });
 
-// 終點（紅色）
 endMarker = new google.maps.marker.AdvancedMarkerElement({
 map: map,
 position: leg.end_location,
 content: new google.maps.marker.PinElement({
 background: "#FF0000",
 glyphColor: "white"
-}).element,
-title: "終點"
+}).element
 });
 }
 
@@ -177,32 +204,28 @@ function updateFare(leg){
 let distanceKm = leg.distance.value / 1000;
 let durationMin = leg.duration.value / 60;
 
-// 計費公式
 let fare = 80 + (distanceKm * 15) + (durationMin * 3);
 
-// 15公里以上加成
 if(distanceKm > 15){
 fare += (distanceKm - 15) * 10;
 }
 
-// 夜間加成（23:00–06:00）
 let now = new Date();
 let hour = now.getHours();
 if(hour >= 23 || hour < 6){
 fare *= 1.2;
 }
 
-// 最低車資
 if(fare < 120){
 fare = 120;
 }
 
 fare = Math.round(fare);
 
-document.getElementById("result").innerHTML =
-`預估距離：${distanceKm.toFixed(1)} km<br>
-預估時間：${Math.round(durationMin)} 分鐘<br>
-預估車資：${fare} 元`;
+document.getElementById("result").innerHTML +=
+`<br><br>預估距離：${distanceKm.toFixed(1)} km
+<br>預估時間：${Math.round(durationMin)} 分鐘
+<br>預估車資：${fare} 元`;
 }
 
 function openLine(){
@@ -212,7 +235,7 @@ window.open("https://lin.ee/1aSbon2");
 </script>
 
 <script async
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap&libraries=marker">
+src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=marker">
 </script>
 
 </body>
