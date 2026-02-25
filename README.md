@@ -97,6 +97,7 @@ let directionsRenderer;
 let startMarker;
 let endMarker;
 
+// 初始化地圖
 function initMap(){
 map = new google.maps.Map(document.getElementById("map"), {
 zoom: 12,
@@ -107,10 +108,11 @@ directionsService = new google.maps.DirectionsService();
 
 directionsRenderer = new google.maps.DirectionsRenderer({
 map: map,
-suppressMarkers: true,
-preserveViewport: true
+suppressMarkers: true
 });
+}
 
+// 計算路線與車資
 function calcRoute(){
 
 let start = document.getElementById("start").value.trim();
@@ -134,40 +136,18 @@ if(status === 'OK'){
 // 顯示路線
 directionsRenderer.setDirections(result);
 
-directionsRenderer.setDirections(result);
-
 let leg = result.routes[0].legs[0];
 
-// 手動把地圖中心拉到路線
-map.fitBounds(result.routes[0].bounds);
-
-// 等地圖完成渲染再放 Marker（關鍵）
-google.maps.event.addListenerOnce(map, 'idle', function () {
-    drawMarkers(leg);
+// 等地圖渲染完成再放標記（手機最穩）
+google.maps.event.addListenerOnce(map, 'idle', function(){
+drawMarkers(leg);
 });
 
-// 先縮放地圖
-map.fitBounds(result.routes[0].bounds);
-
-// 延遲畫標記（關鍵）
-setTimeout(function(){
-    drawMarkers(leg);
-}, 300);
-
-// 畫定位點
-drawMarkers(leg);
-
-// 自動縮放
-let bounds = new google.maps.LatLngBounds();
-bounds.extend(leg.start_location);
-bounds.extend(leg.end_location);
-map.fitBounds(bounds);
-
-// 距離時間
+// 計算距離與時間
 let distanceKm = leg.distance.value / 1000;
 let durationMin = leg.duration.value / 60;
 
-// 車資計算
+// 車資計算規則
 let fare = 80 + (distanceKm * 15) + (durationMin * 3);
 
 if(distanceKm > 15){
@@ -176,7 +156,7 @@ fare += (distanceKm - 15) * 10;
 
 fare = Math.round(fare);
 
-// 顯示
+// 顯示結果
 document.getElementById("result").innerHTML =
 `預估距離：${distanceKm.toFixed(1)} km<br>
 預估時間：${Math.round(durationMin)} 分鐘<br>
@@ -189,34 +169,29 @@ alert("距離計算失敗，請重新輸入地址");
 });
 }
 
+// 畫起點終點
 function drawMarkers(leg){
 
+// 清除舊標記
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-// 起點
+// 起點（綠）
 startMarker = new google.maps.Marker({
 position: leg.start_location,
 map: map,
-icon: {
-url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
-},
-zIndex: 9999
+icon: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
 });
 
-// 終點
+// 終點（紅）
 endMarker = new google.maps.Marker({
 position: leg.end_location,
 map: map,
-icon: {
-url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-},
-zIndex: 9999
+icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
 });
 }
 
-
-
+// LINE按鈕
 function openLine(){
 window.open("https://lin.ee/1aSbon2");
 }
