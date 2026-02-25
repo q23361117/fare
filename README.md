@@ -79,6 +79,7 @@ text-align:left;
 </div>
 
 <script>
+
 let map;
 let directionsService;
 let directionsRenderer;
@@ -86,25 +87,27 @@ let startMarker = null;
 let endMarker = null;
 
 function initMap(){
+
 map = new google.maps.Map(document.getElementById("map"), {
 zoom: 12,
-center: {lat:24.1477, lng:120.6736}
+center: {lat:24.1477, lng:120.6736} // 台中
 });
 
 directionsService = new google.maps.DirectionsService();
 
-// allow route selection
 directionsRenderer = new google.maps.DirectionsRenderer({
 map: map,
 suppressMarkers: true,
 draggable: true
 });
 
-// 使用者改路線時重新計算車資
+// 使用者改路線時重新計算
 directionsRenderer.addListener("directions_changed", function(){
 let result = directionsRenderer.getDirections();
 if(result){
-updateFare(result.routes[0].legs[0]);
+let leg = result.routes[0].legs[0];
+drawMarkers(leg);
+updateFare(leg);
 }
 });
 }
@@ -128,14 +131,11 @@ provideRouteAlternatives: true
 
 if(status === 'OK'){
 
-// 顯示路線（可選擇）
 directionsRenderer.setDirections(result);
 
-// 畫紅綠點（關鍵：延遲執行）
-setTimeout(function(){
-drawMarkers(result.routes[0].legs[0]);
-updateFare(result.routes[0].legs[0]);
-}, 300);
+let leg = result.routes[0].legs[0];
+drawMarkers(leg);
+updateFare(leg);
 
 }else{
 alert("距離計算失敗");
@@ -145,47 +145,60 @@ alert("距離計算失敗");
 
 function drawMarkers(leg){
 
-// 清除舊點
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-
-// 1. 建立紅色終點標記 (Red Marker/Pin)
-const endMarker = new google.maps.marker.PinElement({
-  background: "#FF0000", // 紅色
-  glyphColor: "white",
-
-
-});
-const marker = new google.maps.marker.AdvancedMarkerElement({
-  map: map,
-  position: { lat: 25.033, lng: 121.565 }, // 終點位置
-  content: endMarker.element,
-  title: "終點"
+// 起點（綠色）
+startMarker = new google.maps.marker.AdvancedMarkerElement({
+map: map,
+position: leg.start_location,
+content: new google.maps.marker.PinElement({
+background: "#4CAF50",
+glyphColor: "white"
+}).element,
+title: "起點"
 });
 
-
-// 2. 藍點 (使用者目前位置) 通常由地圖自動定位產生
-// 如果要顯示位置，通常啟用控制項或使用地理位置 API
-map.setOptions({
-  mapTypeControl: true,
-  // 現代 API 不需要特別程式碼即可顯示藍點
+// 終點（紅色）
+endMarker = new google.maps.marker.AdvancedMarkerElement({
+map: map,
+position: leg.end_location,
+content: new google.maps.marker.PinElement({
+background: "#FF0000",
+glyphColor: "white"
+}).element,
+title: "終點"
 });
-
+}
 
 function updateFare(leg){
 
 let distanceKm = leg.distance.value / 1000;
 let durationMin = leg.duration.value / 60;
 
+// ===== 計費邏輯 =====
 let fare = 80 + (distanceKm * 15) + (durationMin * 3);
 
+// 15公里以上加成
 if(distanceKm > 15){
 fare += (distanceKm - 15) * 10;
 }
 
+// 夜間加成（23:00–06:00）
+let now = new Date();
+let hour = now.getHours();
+if(hour >= 23 || hour < 6){
+fare *= 1.2;
+}
+
+// 最低車資
+if(fare < 120){
+fare = 120;
+}
+
 fare = Math.round(fare);
 
+// 顯示
 document.getElementById("result").innerHTML =
 `預估距離：${distanceKm.toFixed(1)} km<br>
 預估時間：${Math.round(durationMin)} 分鐘<br>
@@ -195,10 +208,11 @@ document.getElementById("result").innerHTML =
 function openLine(){
 window.open("https://lin.ee/1aSbon2");
 }
+
 </script>
 
 <script async
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap">
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap&libraries=marker">
 </script>
 
 </body>
