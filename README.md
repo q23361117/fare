@@ -149,24 +149,29 @@ function drawMarkers(leg){
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-// 起點綠點
-startMarker = new google.maps.Marker({
-position: leg.start_location,
-map: map,
-icon: {
-url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
-}
+
+// 1. 建立紅色終點標記 (Red Marker/Pin)
+const endMarker = new google.maps.marker.PinElement({
+  background: "#FF0000", // 紅色
+  glyphColor: "white",
+
+
+});
+const marker = new google.maps.marker.AdvancedMarkerElement({
+  map: map,
+  position: { lat: 25.033, lng: 121.565 }, // 終點位置
+  content: endMarker.element,
+  title: "終點"
 });
 
-// 終點紅點
-endMarker = new google.maps.Marker({
-position: leg.end_location,
-map: map,
-icon: {
-url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-}
+
+// 2. 藍點 (使用者目前位置) 通常由地圖自動定位產生
+// 如果要顯示位置，通常啟用控制項或使用地理位置 API
+map.setOptions({
+  mapTypeControl: true,
+  // 現代 API 不需要特別程式碼即可顯示藍點
 });
-}
+
 
 function updateFare(leg){
 
