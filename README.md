@@ -106,11 +106,10 @@ center: {lat:24.1477, lng:120.6736}
 directionsService = new google.maps.DirectionsService();
 
 directionsRenderer = new google.maps.DirectionsRenderer({
-suppressMarkers: true
+map: map,
+suppressMarkers: true,
+preserveViewport: true
 });
-
-directionsRenderer.setMap(map);
-}
 
 function calcRoute(){
 
@@ -138,6 +137,14 @@ directionsRenderer.setDirections(result);
 directionsRenderer.setDirections(result);
 
 let leg = result.routes[0].legs[0];
+
+// 手動把地圖中心拉到路線
+map.fitBounds(result.routes[0].bounds);
+
+// 等地圖完成渲染再放 Marker（關鍵）
+google.maps.event.addListenerOnce(map, 'idle', function () {
+    drawMarkers(leg);
+});
 
 // 先縮放地圖
 map.fitBounds(result.routes[0].bounds);
@@ -182,37 +189,32 @@ alert("距離計算失敗，請重新輸入地址");
 });
 }
 
-// 綠起點＋紅終點（手機穩定版）
 function drawMarkers(leg){
 
-// 清除舊圖示
 if(startMarker) startMarker.setMap(null);
 if(endMarker) endMarker.setMap(null);
 
-// 起點（自訂綠色圖標）
+// 起點
 startMarker = new google.maps.Marker({
 position: leg.start_location,
 map: map,
-title: "起點",
 icon: {
-url: "https://maps.google.com/mapfiles/kml/paddle/grn-circle.png",
-scaledSize: new google.maps.Size(40, 40),
-anchor: new google.maps.Point(20, 40)
-}
+url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+},
+zIndex: 9999
 });
 
-// 終點（自訂紅色圖標）
+// 終點
 endMarker = new google.maps.Marker({
 position: leg.end_location,
 map: map,
-title: "終點",
 icon: {
-url: "https://maps.google.com/mapfiles/kml/paddle/red-circle.png",
-scaledSize: new google.maps.Size(40, 40),
-anchor: new google.maps.Point(20, 40)
-}
+url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+},
+zIndex: 9999
 });
 }
+
 
 
 function openLine(){
