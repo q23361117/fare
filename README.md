@@ -36,12 +36,17 @@ button{
 width:100%;
 padding:14px;
 margin-top:10px;
-font-size:18px;
+font-size:16px;
 border:none;
 border-radius:10px;
 background:#ff9800;
 color:white;
 cursor:pointer;
+}
+
+.route-btn{
+background:#2196F3;
+margin-top:6px;
 }
 
 #map{
@@ -72,6 +77,8 @@ text-align:left;
 <button onclick="calcRoute()">試算車資</button>
 
 <div id="map"></div>
+
+<div id="routeButtons"></div>
 
 <div class="result" id="result"></div>
 
@@ -106,7 +113,7 @@ draggable: true
 directionsRenderer.addListener("directions_changed", function(){
 let result = directionsRenderer.getDirections();
 if(result){
-let leg = result.routes[0].legs[0];
+let leg = result.routes[directionsRenderer.getRouteIndex()].legs[0];
 drawMarkers(leg);
 updateFare(leg);
 }
@@ -151,18 +158,20 @@ alert("距離計算失敗");
 
 function createRouteButtons(result){
 
-let container = document.getElementById("result");
-container.innerHTML = "<b>選擇路線：</b><br>";
+let container = document.getElementById("routeButtons");
+container.innerHTML = "<b>選擇路線：</b>";
 
 result.routes.forEach((route, index)=>{
 
 let distance = route.legs[0].distance.text;
 let duration = route.legs[0].duration.text;
 
-container.innerHTML += 
-`<button onclick="selectRoute(${index})" style="margin-top:6px;background:#2196F3">
-路線 ${index+1} (${distance} / ${duration})
-</button>`;
+let btn = document.createElement("button");
+btn.className = "route-btn";
+btn.innerText = `路線 ${index+1} (${distance} / ${duration})`;
+btn.onclick = function(){ selectRoute(index); };
+
+container.appendChild(btn);
 });
 }
 
@@ -222,10 +231,10 @@ fare = 120;
 
 fare = Math.round(fare);
 
-document.getElementById("result").innerHTML +=
-`<br><br>預估距離：${distanceKm.toFixed(1)} km
-<br>預估時間：${Math.round(durationMin)} 分鐘
-<br>預估車資：${fare} 元`;
+document.getElementById("result").innerHTML =
+`預估距離：${distanceKm.toFixed(1)} km<br>
+預估時間：${Math.round(durationMin)} 分鐘<br>
+預估車資：${fare} 元`;
 }
 
 function openLine(){
@@ -235,7 +244,7 @@ window.open("https://lin.ee/1aSbon2");
 </script>
 
 <script async
-src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=marker">
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMi3iCO0lZuw3XfaUoKxBrQJMGFbiz5po&callback=initMap&libraries=marker">
 </script>
 
 </body>
