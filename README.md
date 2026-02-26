@@ -82,6 +82,12 @@ text-align:left;
 
 <div class="result" id="result"></div>
 
+<div class="note">
+※ 計算費率以最快路線為主非平面道路<br>
+※ 實際價格依司機跳錶為準<br>
+※ 塞車尖峰時段價格會有浮動
+</div>
+
 <button onclick="openLine()">🚖 立即叫車</button>
 </div>
 
