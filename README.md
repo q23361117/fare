@@ -74,7 +74,8 @@ text-align:left;
 <input id="start" placeholder="上車地點">
 <input id="end" placeholder="下車地點">
 
-<button onclick="calcRoute()">試算車資</button>
+<button onclick="calcRoute(false)">一般路線試算</button>
+<button onclick="calcRoute(true)" class="route-btn">平面道路試算</button>
 
 <div id="map"></div>
 
@@ -83,9 +84,10 @@ text-align:left;
 <div class="result" id="result"></div>
 
 <div class="note">
-※ 計算費率以最快路線為主非平面道路<br>
+※ 一般路線以 Google 建議路線為主<br>
+※ 平面道路會盡量避開高速公路／快速道路<br>
 ※ 實際價格依司機跳錶為準<br>
-※ 塞車尖峰時段價格會有浮動
+※ 塞車尖峰時段價格會有浮動<br>
 ※ 40公里以上遠途搭乘可優惠折扣
 </div>
 
@@ -127,7 +129,7 @@ updateFare(leg);
 });
 }
 
-function calcRoute(){
+function calcRoute(avoidHighways){
 
 let start = document.getElementById("start").value.trim();
 let end = document.getElementById("end").value.trim();
@@ -141,7 +143,8 @@ directionsService.route({
 origin: start,
 destination: end,
 travelMode: 'DRIVING',
-provideRouteAlternatives: true
+provideRouteAlternatives: true,
+avoidHighways: avoidHighways
 }, function(result, status){
 
 if(status === 'OK'){
